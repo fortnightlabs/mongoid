@@ -507,6 +507,26 @@ describe Mongoid::Associations do
       end
     end
 
+    context "saving a new parent document with new children" do
+
+      let(:person) { Person.create }
+      let(:address) { Address.create(:addressable => person) }
+      let!(:location) { Location.create(:address => address) }
+
+      it "saves the person" do
+        Person.last.should == person
+      end
+
+      it "saves the address" do
+        Person.last.addresses.last.should == address
+      end
+
+      it "saves the location" do
+        Person.last.addresses.last.locations.last.should == location
+      end
+
+    end
+
     context "saving an existing parent document with existing children" do
 
       before do
