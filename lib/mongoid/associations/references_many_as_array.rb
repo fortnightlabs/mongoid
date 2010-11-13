@@ -22,6 +22,7 @@ module Mongoid #:nodoc:
           # clean way to handle this with new documents - we want to set the
           # actual objects as well, but dont want to get in an infinite loop
           # while doing so.
+          @parent.identify
           if inverse?
             reverse_key = reverse_key(object)
             case inverse_of(object).macro

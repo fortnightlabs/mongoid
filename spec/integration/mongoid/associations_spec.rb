@@ -785,17 +785,6 @@ describe Mongoid::Associations do
 
   context "references many as array" do
 
-    context "when initializing a new document" do
-      context "with a references_many association" do
-        let(:preference) { Preference.create(:name => "test") }
-        let(:person) { Person.new :preferences => [preference] }
-
-        it 'adds the document to the array' do
-          person.preferences.first.should == preference
-        end
-      end
-    end
-
     context "with a saved parent" do
       let(:person) { Person.create!(:ssn => "992-33-1010") }
 
@@ -993,6 +982,45 @@ describe Mongoid::Associations do
           end
 
           it "adds the parent document to the reverse association"
+        end
+      end
+    end
+
+    context "when initializing a new parent" do
+      context "with a references_many association" do
+        before do
+          @preference = Preference.create(:name => "test")
+          @person = Person.new(:preferences => [@preference])
+        end
+
+        it 'adds the document to the array' do
+          @person.preferences.first.should == @preference
+        end
+
+        it "adds the parent document to the reverse association" do
+          pending 'see references_many_as_array.rb:20'
+          person.save!
+          @preference.people.first.should == @person
+          @preference.reload.people.first.should == @person
+        end
+      end
+    end
+
+    context "when creating a new parent" do
+      context "with a references_many association" do
+        before do
+          @preference = Preference.create(:name => "test")
+          @person = Person.create(:preferences => [@preference])
+        end
+
+        it 'adds the document to the array' do
+          @person.preferences.first.should == @preference
+          @person.reload.preferences.first.should == @preference
+        end
+
+        it "adds the parent document to the reverse association" do
+          @preference.people.first.should == @person
+          @preference.reload.people.first.should == @person
         end
       end
     end
