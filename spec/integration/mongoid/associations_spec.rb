@@ -1024,5 +1024,30 @@ describe Mongoid::Associations do
         end
       end
     end
+
+    context "when setting a child" do
+      context "with a references_many association" do
+        before do
+          @preference = Preference.create(:name => "test")
+          @person = Person.create(:preferences => [@preference])
+        end
+
+        context "when setting the child to a new value" do
+          before do
+            @preference2 = Preference.create(:name => 'test2')
+            @person.preferences = [@preference2]
+          end
+
+          it 'should not increase the size of the array' do
+            @person.reload.preferences.count.should == 1
+          end
+
+          it 'should replace the document in the array' do
+            @person.reload.preferences.first.should == @preference2
+          end
+        end
+      end
+    end
+
   end
 end

@@ -80,6 +80,27 @@ module Mongoid #:nodoc:
         reset; removed
       end
 
+      # Dereference all the associated objects.
+      #
+      # Example:
+      #
+      # <tt>person.posts.dereference_all</tt>
+      def dereference_all
+        @target.each do |object|
+          if inverse?
+            reverse_key = reverse_key(object)
+            case inverse_of(object).macro
+            when :references_many
+              object.send("#{reverse_key}=", object.send(reverse_key) - [@parent.id])
+            when :referenced_in
+              object.send("#{reverse_key}=", nil)
+            end
+          end
+        end
+        @parent.send(@foreign_key).clear
+        reset
+      end
+
       protected
 
       # Find the inverse key for the supplied document.
@@ -118,9 +139,8 @@ module Mongoid #:nodoc:
         #
         # <tt>ReferencesManyAsArray.update(preferences, person, options)</tt>
         def update(target, document, options)
-          target.each do |child|
-            document.send(options.name) << child
-          end
+          document.send(options.name).dereference_all
+          document.send(options.name).push *target
           instantiate(document, options, target)
         end
       end
