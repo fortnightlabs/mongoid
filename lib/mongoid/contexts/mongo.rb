@@ -271,8 +271,13 @@ module Mongoid #:nodoc:
       # empty. If fields have been defined then _type will be included as well.
       def process_options
         fields = options[:fields]
-        if fields && fields.size > 0 && !fields.include?(:_type)
-          fields << :_type
+        if fields && fields.size > 0
+          case fields
+          when Array
+            fields << :_type if !fields.include?(:_type)
+          when Hash
+            fields.delete(:_type) if fields[:_type] == 0
+          end
           options[:fields] = fields
         end
         options.dup

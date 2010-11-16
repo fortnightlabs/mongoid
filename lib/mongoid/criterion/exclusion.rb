@@ -58,7 +58,9 @@ module Mongoid #:nodoc:
       #
       # Returns: <tt>self</tt>
       def only(*args)
-        @options[:fields] = args.flatten if args.any?; self
+        @options[:fields] = args.flatten if args.any?
+        @options[:fields] = args.first if Hash === args.first
+        self
       end
     end
   end
