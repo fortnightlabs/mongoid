@@ -50,8 +50,7 @@ module Mongoid # :nodoc:
 
     # Updates all the one-to-many relational associations for the name.
     def update_associations(name)
-      retrun true if @updating_associations
-      if new_record?
+      if new_record? && !@updating_associations
         begin
           @updating_associations = true
           send(name).each { |doc| doc.save }

@@ -15,10 +15,6 @@ module Mongoid #:nodoc:
       def <<(*objects)
         push_without_inverse(*objects)
         push_onto_inverse(*objects) if inverse?
-        unless @parent.new_record?
-          @parent.save
-          objects.each(&:save)
-        end
       end
 
       alias :concat :<<
