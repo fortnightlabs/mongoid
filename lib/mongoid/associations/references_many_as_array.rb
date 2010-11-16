@@ -13,29 +13,12 @@ module Mongoid #:nodoc:
       #
       # <tt>person.preferences << Preference.new(:name => "VGA")</tt>
       def <<(*objects)
-        @target = @target.entries
-        objects.flatten.each do |object|
-          # First set the documents id on the parent array of ids.
-          @parent.send(@foreign_key) << object.id
-          # Then we need to set the parent's id on the documents array of ids
-          # to get the inverse side of the association as well. Note, need a
-          # clean way to handle this with new documents - we want to set the
-          # actual objects as well, but dont want to get in an infinite loop
-          # while doing so.
-          @parent.identify
-          if inverse?
-            reverse_key = reverse_key(object)
-            case inverse_of(object).macro
-            when :references_many
-              object.send(reverse_key) << @parent.id
-            when :referenced_in
-              object.send("#{reverse_key}=", @parent.id)
-            end
-          end
-          @target << object
-          object.save unless @parent.new_record?
+        push_without_inverse(*objects)
+        push_onto_inverse(*objects) if inverse?
+        unless @parent.new_record?
+          @parent.save
+          objects.each(&:save)
         end
-        @parent.save unless @parent.new_record?
       end
 
       alias :concat :<<
@@ -102,6 +85,29 @@ module Mongoid #:nodoc:
       end
 
       protected
+
+      # Associate the object with the parent without updating the inverse side
+      # of the relationship (avoids infinite recursion).
+      def push_without_inverse(*objects)
+        objects = objects.flatten
+        @target = @target.entries
+        @parent.send(@foreign_key).push(*objects.map(&:id))
+        @target.push(*objects)
+      end
+
+      # Set the parent's id on the documents array of ids on the inverse side
+      # of the association as well.
+      def push_onto_inverse(*objects)
+        @parent.identify
+        objects.flatten.each do |object|
+          case inverse_of(object).macro
+          when :references_many
+            object.send(@options.inverse_of).push_without_inverse(@parent)
+          when :referenced_in
+            object.send("#{reverse_key(object)}=", @parent.id)
+          end
+        end
+      end
 
       # Find the inverse key for the supplied document.
       def reverse_key(document)

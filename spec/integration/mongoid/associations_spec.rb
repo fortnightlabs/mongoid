@@ -948,7 +948,9 @@ describe Mongoid::Associations do
             person.preferences.first.should == preference
           end
 
-          it "adds the parent document to the reverse association"
+          it "adds the parent document to the reverse association" do
+            preference.people.first.should == person
+          end
         end
 
         context "with a referenced_in association" do
@@ -971,7 +973,9 @@ describe Mongoid::Associations do
             person.preferences.first.should == preference
           end
 
-          it "adds the parent document to the reverse association"
+          it "adds the parent document to the reverse association" do
+            preference.people.first.should == person
+          end
         end
 
         context "with a referenced_in association" do
@@ -998,9 +1002,8 @@ describe Mongoid::Associations do
         end
 
         it "adds the parent document to the reverse association" do
-          pending 'see references_many_as_array.rb:20'
-          person.save!
           @preference.people.first.should == @person
+          @person.save!
           @preference.reload.people.first.should == @person
         end
       end

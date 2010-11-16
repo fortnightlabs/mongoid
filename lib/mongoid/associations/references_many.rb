@@ -18,6 +18,7 @@ module Mongoid #:nodoc:
 
       alias :concat :<<
       alias :push :<<
+      alias :push_without_inverse :<<
 
       # Builds a new Document and adds it to the association collection. The
       # document created will be of the same class as the others in the
