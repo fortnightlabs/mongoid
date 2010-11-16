@@ -13,6 +13,7 @@ module Mongoid #:nodoc:
       #
       # <tt>person.preferences << Preference.new(:name => "VGA")</tt>
       def <<(*objects)
+        objects = objects.flatten
         push_without_inverse(*objects)
         push_onto_inverse(*objects) if inverse?
       end
@@ -85,17 +86,18 @@ module Mongoid #:nodoc:
       # Associate the object with the parent without updating the inverse side
       # of the relationship (avoids infinite recursion).
       def push_without_inverse(*objects)
-        objects = objects.flatten
         @target = @target.entries
         @parent.send(@foreign_key).push(*objects.map(&:id))
-        @target.push(*objects)
+
+        @parent.unmemoize(options.name)
+        @parent.memoized(options.name) { @target.push(*objects) }
       end
 
       # Set the parent's id on the documents array of ids on the inverse side
       # of the association as well.
       def push_onto_inverse(*objects)
         @parent.identify
-        objects.flatten.each do |object|
+        objects.each do |object|
           case inverse_of(object).macro
           when :references_many
             object.send(@options.inverse_of).push_without_inverse(@parent)

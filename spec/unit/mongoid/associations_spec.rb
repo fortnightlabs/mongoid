@@ -729,10 +729,10 @@ describe Mongoid::Associations do
 
     context "when associations exist" do
 
-      context "when the document is a new record" do
+      context "when the child is changed" do
 
         before do
-          @related = stub(:id => "100", :person= => true)
+          @related = stub(:id => "100", :person= => true, :changed? => true)
           @person = Person.new
           @person.posts = [@related]
         end
@@ -744,10 +744,10 @@ describe Mongoid::Associations do
 
       end
 
-      context "when the document is not new" do
+      context "when the child is not changed" do
 
         before do
-          @related = stub(:id => "100", :person= => true)
+          @related = stub(:id => "100", :person= => true, :changed? => false)
           @person = Person.new
           @person.instance_variable_set(:@new_record, false)
           @person.posts = [@related]
@@ -770,7 +770,7 @@ describe Mongoid::Associations do
       it "does nothing" do
         results = []
         results.stubs(:set_order_by)
-        Post.expects(:find).returns(results)
+        Post.expects(:find).twice.returns(results)
         @person.update_associations(:posts)
         @person.posts.first.should be_nil
       end

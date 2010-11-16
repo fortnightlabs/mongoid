@@ -91,9 +91,9 @@ describe Mongoid::Associations::ReferencesManyAsArray do
             person.preference_ids.should include(preference.id)
           end
 
-          it "saves the child document" do
+          it "does not save the child document" do
             child = Preference.new(:name => "Saturation")
-            child.expects(:save).returns(true)
+            child.expects(:save).never
             @association << child
           end
 
@@ -103,8 +103,8 @@ describe Mongoid::Associations::ReferencesManyAsArray do
             end
           end
 
-          it "saves the parent" do
-            person.expects(:save)
+          it "does not save the parent" do
+            person.expects(:save).never
             person.preferences << Preference.new(:name => "Utter darkness")
           end
         end
