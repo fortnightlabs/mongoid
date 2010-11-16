@@ -1041,12 +1041,49 @@ describe Mongoid::Associations do
             @person.preferences = [@preference2]
           end
 
-          it 'should not increase the size of the array' do
-            @person.reload.preferences.count.should == 1
+          context 'without saving' do
+            it 'should not increase the size of the array' do
+              @person.preferences.count.should == 1
+            end
+
+            it 'should replace the document in the array' do
+              @person.preferences.first.should == @preference2
+            end
+
+            it 'should remove the document from the old inverse association' do
+              pending
+              @preference.people.first.should == nil
+            end
+
+            it 'should add the document to the new inverse association' do
+              @preference2.people.first.should == @person
+            end
           end
 
-          it 'should replace the document in the array' do
-            @person.reload.preferences.first.should == @preference2
+          context 'after saving' do
+            before do
+              @person.save!
+              @person.reload
+              @preference.reload
+              @preference2.reload
+            end
+
+            it 'should not increase the size of the array' do
+              @person.preferences.count.should == 1
+            end
+
+            it 'should replace the document in the array' do
+              @person.preferences.first.should == @preference2
+            end
+
+            it 'should remove the document from the old inverse association' do
+              pending
+              @preference.people.first.should == nil
+            end
+
+            it 'should add the document to the new inverse association' do
+              @preference2.people.first.should == @person
+            end
           end
         end
       end
