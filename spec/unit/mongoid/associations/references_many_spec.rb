@@ -29,7 +29,7 @@ describe Mongoid::Associations::ReferencesMany do
     context "when parent document has been saved" do
 
       before do
-        @parent = stub(:id => "4c52c439931a90ab29000001", :new_record? => false, :class => Person)
+        @parent = stub(:id => "4c52c439931a90ab29000001", :new_record? => false, :class => Person, :identify => false)
         Post.expects(:all).returns([])
         @association = Mongoid::Associations::ReferencesMany.new(@parent, options)
       end
@@ -48,7 +48,7 @@ describe Mongoid::Associations::ReferencesMany do
       context "when appending a non mongoid object" do
 
         before do
-          @parent = stub(:id => "4c52c439931a90ab29000001", :new_record? => true, :class => Person)
+          @parent = stub(:id => "4c52c439931a90ab29000001", :new_record? => true, :class => Person, :identify => false)
           Post.expects(:all).returns([])
           @association = Mongoid::Associations::ReferencesMany.new(@parent, options)
         end
@@ -64,7 +64,7 @@ describe Mongoid::Associations::ReferencesMany do
 
         before do
           @criteria = mock
-          @parent = stub(:id => "4c52c439931a90ab29000001", :new_record? => true, :class => Person)
+          @parent = stub(:id => "4c52c439931a90ab29000001", :new_record? => true, :class => Person, :identify => false)
           Post.expects(:all).returns(@criteria)
           @association = Mongoid::Associations::ReferencesMany.new(@parent, options)
         end
@@ -82,7 +82,7 @@ describe Mongoid::Associations::ReferencesMany do
     context "with multiple objects" do
 
       before do
-        @parent = stub(:id => "4c52c439931a90ab29000001", :new_record? => true, :class => Person)
+        @parent = stub(:id => "4c52c439931a90ab29000001", :new_record? => true, :class => Person, :identify => false)
         Post.expects(:all).returns([])
         @association = Mongoid::Associations::ReferencesMany.new(@parent, options)
       end
@@ -103,7 +103,7 @@ describe Mongoid::Associations::ReferencesMany do
     before do
       @criteria = mock
       @criteria.expects(:entries).returns([])
-      @parent = stub(:id => "4c52c439931a90ab29000005", :class => Person, :new_record? => true)
+      @parent = stub(:id => "4c52c439931a90ab29000005", :class => Person, :new_record? => true, :identify => false)
       Post.expects(:all).returns(@criteria)
       @association = Mongoid::Associations::ReferencesMany.new(@parent, options)
     end
@@ -159,7 +159,7 @@ describe Mongoid::Associations::ReferencesMany do
 
     before do
       @criteria = mock
-      @parent = stub(:id => "4c52c439931a90ab29000005", :class => Person, :new_record? => true)
+      @parent = stub(:id => "4c52c439931a90ab29000005", :class => Person, :new_record? => true, :identify => false)
       Post.expects(:all).twice.returns(@criteria)
       @parent.expects(:reset).with("posts").yields
       @association = Mongoid::Associations::ReferencesMany.new(@parent, options)
@@ -175,7 +175,7 @@ describe Mongoid::Associations::ReferencesMany do
 
     before do
       @criteria = mock
-      @parent = stub(:id => "4c52c439931a90ab29000005", :class => Person, :new_record? => true)
+      @parent = stub(:id => "4c52c439931a90ab29000005", :class => Person, :new_record? => true, :identify => false)
       Post.expects(:all).twice.returns(@criteria)
       @parent.expects(:reset).with("posts").yields
       @association = Mongoid::Associations::ReferencesMany.new(@parent, options)
@@ -197,7 +197,7 @@ describe Mongoid::Associations::ReferencesMany do
     context "when parent document has been saved" do
 
       before do
-        @parent = stub(:id => "4c52c439931a90ab29000001", :new_record? => false, :class => Person)
+        @parent = stub(:id => "4c52c439931a90ab29000001", :new_record? => false, :class => Person, :identify => false)
         Post.expects(:all).returns([])
         @association = Mongoid::Associations::ReferencesMany.new(@parent, options)
       end
@@ -214,7 +214,7 @@ describe Mongoid::Associations::ReferencesMany do
     context "when parent document has not been saved" do
 
       before do
-        @parent = stub(:id => "4c52c439931a90ab29000001", :new_record? => true, :class => Person)
+        @parent = stub(:id => "4c52c439931a90ab29000001", :new_record? => true, :class => Person, :identify => false)
         Post.expects(:all).returns([])
         @association = Mongoid::Associations::ReferencesMany.new(@parent, options)
       end
@@ -230,7 +230,7 @@ describe Mongoid::Associations::ReferencesMany do
     context "with multiple objects" do
 
       before do
-        @parent = stub(:id => "4c52c439931a90ab29000001", :new_record? => true, :class => Person)
+        @parent = stub(:id => "4c52c439931a90ab29000001", :new_record? => true, :class => Person, :identify => false)
         Post.expects(:all).returns([])
         @association = Mongoid::Associations::ReferencesMany.new(@parent, options)
       end
@@ -250,7 +250,7 @@ describe Mongoid::Associations::ReferencesMany do
 
     before do
       @post = Post.new
-      @parent = stub(:id => "4c52c439931a90ab29000005", :class => Person, :new_record? => true)
+      @parent = stub(:id => "4c52c439931a90ab29000005", :class => Person, :new_record? => true, :identify => false)
       Post.expects(:all).returns([])
       @association = Mongoid::Associations::ReferencesMany.new(@parent, options)
       Post.expects(:instantiate).returns(@post)
@@ -277,7 +277,7 @@ describe Mongoid::Associations::ReferencesMany do
 
     before do
       @post = Post.new
-      @parent = stub(:id => "4c52c439931a90ab29000005", :class => Person, :new_record? => true)
+      @parent = stub(:id => "4c52c439931a90ab29000005", :class => Person, :new_record? => true, :identify => false)
       Post.expects(:all).returns([])
       @association = Mongoid::Associations::ReferencesMany.new(@parent, options)
       Post.expects(:instantiate).returns(@post)
@@ -459,7 +459,7 @@ describe Mongoid::Associations::ReferencesMany do
     context "when parent document has been saved" do
 
       before do
-        @parent = stub(:id => "4c52c439931a90ab29000001", :new_record? => false, :class => Person)
+        @parent = stub(:id => "4c52c439931a90ab29000001", :new_record? => false, :class => Person, :identify => false)
         Post.expects(:all).returns([])
         @association = Mongoid::Associations::ReferencesMany.new(@parent, options)
       end
@@ -476,7 +476,7 @@ describe Mongoid::Associations::ReferencesMany do
     context "when parent document has not been saved" do
 
       before do
-        @parent = stub(:id => "4c52c439931a90ab29000001", :new_record? => true, :class => Person)
+        @parent = stub(:id => "4c52c439931a90ab29000001", :new_record? => true, :class => Person, :identify => false)
         Post.expects(:all).returns([])
         @association = Mongoid::Associations::ReferencesMany.new(@parent, options)
       end
@@ -492,7 +492,7 @@ describe Mongoid::Associations::ReferencesMany do
     context "with multiple objects" do
 
       before do
-        @parent = stub(:id => "4c52c439931a90ab29000001", :new_record? => true, :class => Person)
+        @parent = stub(:id => "4c52c439931a90ab29000001", :new_record? => true, :class => Person, :identify => false)
         Post.expects(:all).returns([])
         @association = Mongoid::Associations::ReferencesMany.new(@parent, options)
       end

@@ -9,6 +9,7 @@ module Mongoid #:nodoc:
       # the process.
       def <<(*objects)
         load_target
+        @parent.identify
         objects.flatten.each do |object|
           object.write_attribute(@foreign_key, @parent.id)
           @target << object
@@ -224,6 +225,7 @@ module Mongoid #:nodoc:
         #
         # <tt>RelatesToOne.update(game, person, options)</tt>
         def update(target, document, options)
+          document.identify
           name = determine_name(document, options)
           target.each { |child| child.send("#{name}=", document) }
           instantiate(document, options, target)
