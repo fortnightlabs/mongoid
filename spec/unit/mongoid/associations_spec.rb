@@ -744,21 +744,6 @@ describe Mongoid::Associations do
 
       end
 
-      context "when the child is not changed" do
-
-        before do
-          @related = stub(:id => "100", :person= => true, :changed? => false)
-          @person = Person.new
-          @person.instance_variable_set(:@new_record, false)
-          @person.posts = [@related]
-        end
-
-        it "does not save each association" do
-          @person.update_associations(:posts)
-        end
-
-      end
-
     end
 
     context "when no associations exist" do
