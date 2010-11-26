@@ -50,11 +50,20 @@ module Mongoid # :nodoc:
 
     # Updates all the one-to-many relational associations for the name.
     def update_associations(name)
-      assn = send(name)
-      if assn.is_a?(Array) && !associations[name.to_s].embedded?
-        unmemoize(name)
-        assn.each { |doc| doc.save if doc.changed? }
+      begin
+        @updating_associations = true
+        assn = send(name)
+        if assn.is_a?(Array) && !associations[name.to_s].embedded?
+          unmemoize(name)
+          assn.each { |doc| doc.save unless doc.updating_assocations? }
+        end
+      ensure
+        @updating_associations = false
       end
+    end
+
+    def updating_assocations?
+      !!@updating_associations
     end
 
     def update_foreign_keys
