@@ -92,15 +92,43 @@ describe Mongoid::Indexes do
 
       it "creates a unique index on the collection" do
         @class.index(:name, :unique => true)
-        @class.index_options[:name].should == {:unique => true}
+        @class.index_options[:name][:unique].should be_true
       end
 
     end
 
     context "when not unique" do
+
       it "creates an index on the collection" do
         @class.index(:name)
-        @class.index_options[:name].should == {:unique => false}
+        @class.index_options[:name].should == {:unique => false, :background => true}
+      end
+
+    end
+
+    context "when background" do
+
+      it "creates a background index on the collection" do
+        @class.index(:name, :background => true)
+        @class.index_options[:name][:background].should be_true
+      end
+
+    end
+
+    context "when not specified" do
+
+      it "creates a background index on the collection" do
+        @class.index(:name)
+        @class.index_options[:name][:background].should be_true
+      end
+
+    end
+
+    context "when not background" do
+
+      it "creates an index on the collection" do
+        @class.index(:name, :background => false)
+        @class.index_options[:name][:background].should_not be_true
       end
 
     end

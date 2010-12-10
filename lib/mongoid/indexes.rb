@@ -30,6 +30,7 @@ module Mongoid #:nodoc
       # Adds an index on the field specified. Options can be :unique => true or
       # :unique => false. It will default to the latter.
       def index(name, options = { :unique => false })
+        options.reverse_merge! :background => true
         self.index_options[name] = options
         create_indexes if Mongoid.autocreate_indexes
       end
