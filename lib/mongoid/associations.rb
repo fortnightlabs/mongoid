@@ -55,14 +55,14 @@ module Mongoid # :nodoc:
         assn = send(name)
         if assn.is_a?(Array) && !associations[name.to_s].embedded?
           unmemoize(name)
-          assn.each { |doc| doc.save if doc.changed? && !doc.updating_assocations? }
+          assn.each { |doc| doc.save if doc.changed? && !doc.updating_associations? }
         end
       ensure
         @updating_associations = false
       end
     end
 
-    def updating_assocations?
+    def updating_associations?
       !!@updating_associations
     end
 

@@ -732,7 +732,7 @@ describe Mongoid::Associations do
       context "when the child is not updating_assocations" do
 
         before do
-          @related = stub(:id => "100", :person= => true, :updating_assocations? => false, :changed? => true)
+          @related = stub(:id => "100", :person= => true, :updating_associations? => false, :changed? => true)
           @person = Person.new
           @person.posts = [@related]
         end
