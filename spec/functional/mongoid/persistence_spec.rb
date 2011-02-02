@@ -56,6 +56,55 @@ describe Mongoid::Persistence do
         person.should be_persisted
       end
     end
+
+    context "when passing in a relation" do
+
+      context "when child is a new record" do
+
+        let(:house) do
+          House.new(:name => "Earl")
+        end
+
+        let(:person) do
+          Person.create(:ssn => "666-66-6666", :houses => [ house ])
+        end
+
+        it "sets the instance of the relation" do
+          person.houses.should == [ house ]
+        end
+
+        it "sets properly through method_missing" do
+          person.houses.to_a.should == [ house ]
+        end
+
+        it "persists the reference" do
+          person.houses(true).should == [ house ]
+        end
+      end
+
+      context "when child is an existing record" do
+
+        let(:house) do
+          House.create(:name => "Wayne Manor")
+        end
+
+        let(:person) do
+          Person.create(:ssn => "666-66-6666", :houses => [ house ])
+        end
+
+        it "sets the instance of the relation" do
+          person.houses.should == [ house ]
+        end
+
+        it "sets properly through method_missing" do
+          person.houses.to_a.should == [ house ]
+        end
+
+        it "persists the reference" do
+          person.houses(true).should == [ house ]
+        end
+      end
+    end
   end
 
   describe ".create!" do
